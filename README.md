@@ -1,13 +1,14 @@
 # Lite Personal Finances
 
-A small Python CLI for tracking expenses in a local SQLite database.
+A small Python CLI for tracking income and expenses in a local SQLite database.
 
 ## Features
 
 - add expenses from the command line
+- add income from the command line
 - store data locally in SQLite
-- list recorded expenses
-- show simple spending summaries
+- list recorded transactions
+- show income, expense, and net balance summaries
 
 ## Usage
 
@@ -23,7 +24,13 @@ Add an expense:
 python3 finances.py add 120.50 groceries "supermarket run"
 ```
 
-List expenses:
+Add income:
+
+```bash
+python3 finances.py income 1500 salary "monthly payment"
+```
+
+List transactions:
 
 ```bash
 python3 finances.py list
