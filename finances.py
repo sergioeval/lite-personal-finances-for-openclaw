@@ -45,14 +45,6 @@ def connect() -> sqlite3.Connection:
     return conn
 
 
-def table_exists(conn: sqlite3.Connection, table_name: str) -> bool:
-    row = conn.execute(
-        "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",
-        (table_name,),
-    ).fetchone()
-    return row is not None
-
-
 def init_db() -> None:
     with connect() as conn:
         conn.execute(
@@ -79,9 +71,6 @@ def init_db() -> None:
             )
             """
         )
-        if not table_exists(conn, "accounts"):
-            conn.commit()
-            return
         conn.commit()
 
 
@@ -117,15 +106,6 @@ def fetch_accounts() -> list[Account]:
     with connect() as conn:
         rows = conn.execute("SELECT id, name, type, note FROM accounts ORDER BY id ASC").fetchall()
     return [Account(**dict(row)) for row in rows]
-
-
-def fetch_account_name(account_id: int) -> str:
-    init_db()
-    with connect() as conn:
-        row = conn.execute("SELECT name FROM accounts WHERE id = ?", (account_id,)).fetchone()
-    if row is None:
-        raise ValueError(f"Account #{account_id} not found")
-    return str(row[0])
 
 
 def add_transaction(kind: str, amount: float, category: str, account_id: int, note: str, spent_at: str | None = None) -> int:

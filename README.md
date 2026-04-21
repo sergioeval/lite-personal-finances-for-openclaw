@@ -81,3 +81,4 @@ finances.sqlite3
 ```
 
 It is ignored by git and should not be committed.
+It is persistent and should never be deleted automatically.
