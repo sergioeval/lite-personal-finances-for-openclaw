@@ -64,6 +64,14 @@ def add_transaction(kind: str, amount: float, category: str, note: str, spent_at
         return int(cur.lastrowid)
 
 
+def delete_transaction(transaction_id: int) -> bool:
+    init_db()
+    with connect() as conn:
+        cur = conn.execute("DELETE FROM transactions WHERE id = ?", (transaction_id,))
+        conn.commit()
+        return cur.rowcount > 0
+
+
 def fetch_transactions(limit: int | None = None) -> list[Transaction]:
     init_db()
     query = "SELECT id, spent_at, amount, type, category, note FROM transactions ORDER BY spent_at DESC, id DESC"
@@ -143,6 +151,9 @@ def parse_args() -> argparse.Namespace:
     income_parser.add_argument("note", nargs="?", default="", help="Optional note")
     income_parser.add_argument("--spent-at", dest="spent_at", help="ISO timestamp, defaults to now in UTC")
 
+    delete_parser = subparsers.add_parser("delete", help="Delete a transaction by ID")
+    delete_parser.add_argument("id", type=int, help="Transaction ID")
+
     list_parser = subparsers.add_parser("list", help="List transactions")
     list_parser.add_argument("--limit", type=int, default=None, help="Limit number of rows")
 
@@ -168,6 +179,14 @@ def main() -> None:
     if args.command == "income":
         row_id = add_transaction("income", args.amount, args.category, args.note, args.spent_at)
         print(f"Recorded income #{row_id}")
+        return
+
+    if args.command == "delete":
+        removed = delete_transaction(args.id)
+        if removed:
+            print(f"Deleted transaction #{args.id}")
+        else:
+            print(f"Transaction #{args.id} not found")
         return
 
     if args.command == "list":

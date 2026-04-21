@@ -6,6 +6,7 @@ A small Python CLI for tracking income and expenses in a local SQLite database.
 
 - add expenses from the command line
 - add income from the command line
+- delete transactions by ID
 - store data locally in SQLite
 - list recorded transactions
 - show income, expense, and net balance summaries
@@ -28,6 +29,12 @@ Add income:
 
 ```bash
 python3 finances.py income 1500 salary "monthly payment"
+```
+
+Delete a transaction:
+
+```bash
+python3 finances.py delete 3
 ```
 
 List transactions:
